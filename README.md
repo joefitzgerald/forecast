@@ -1,12 +1,5 @@
-# forecast
+# forecast [![](https://godoc.org/github.com/joefitzgerald/forecast?status.svg)](https://godoc.org/github.com/joefitzgerald/forecast)
 A Forecast ([forecastapp.com](https://www.forecastapp.com)) API Client For Go.
-
-## Installation
-Add the dependency to your project:
-
-```bash
-$ dep ensure github.com/joefitzgerald/forecast
-```
 
 # Usage
 First, construct an API:

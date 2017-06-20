@@ -29,6 +29,43 @@ type Assignment struct {
 	RepeatedAssignmentSetID int       `json:"repeated_assignment_set_id"`
 }
 
+// Weekdays returns the number of working days between the start date and end date
+// of the assignment
+func (a *Assignment) Weekdays() int {
+	start, err := time.Parse("2006-01-02", a.StartDate)
+	if err != nil {
+		return 0
+	}
+
+	finish, err := time.Parse("2006-01-02", a.EndDate)
+	if err != nil {
+		return 0
+	}
+
+	next := start
+	result := 0
+	for {
+		if finish.Sub(next).Seconds() < 0 {
+			break
+		}
+		switch next.Weekday() {
+		case time.Monday:
+			result = result + 1
+		case time.Tuesday:
+			result = result + 1
+		case time.Wednesday:
+			result = result + 1
+		case time.Thursday:
+			result = result + 1
+		case time.Friday:
+			result = result + 1
+		}
+		next = next.Add(time.Hour * 24)
+	}
+
+	return result
+}
+
 // Assignments retrieves all assignments for the Forecast account
 func (api *API) Assignments() (Assignments, error) {
 	var container assignmentsContainer

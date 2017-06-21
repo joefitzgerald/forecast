@@ -2,22 +2,24 @@ package forecast_test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/joefitzgerald/forecast"
 )
 
 func TestAssignmentDays(t *testing.T) {
-	assignment := forecast.Assignment{
-		StartDate: "2017-06-20",
-		EndDate:   "2017-07-01",
-	}
-	start, _ := time.Parse("2006-01-02", assignment.StartDate)
+	doTestAssignmentDays(t, "2017-06-20", "2017-07-01", 9)
+	doTestAssignmentDays(t, "2017-06-20", "2017-06-20", 1)
+	doTestAssignmentDays(t, "2017-06-20", "2017-06-21", 2)
+}
 
-	t.Log(start)
+func doTestAssignmentDays(t *testing.T, start string, end string, expected int) {
+	assignment := forecast.Assignment{
+		StartDate: start,
+		EndDate:   end,
+	}
 
 	days := assignment.Weekdays()
-	if days != 9 {
-		t.Errorf("expected %v, got %v", 9, days)
+	if days != expected {
+		t.Errorf("for start of %s and end of %s, expected %v working days, but got %v working days", start, end, expected, days)
 	}
 }

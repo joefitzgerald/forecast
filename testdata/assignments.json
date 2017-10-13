@@ -1,0 +1,30 @@
+{
+	"assignments": [
+		{
+			"id": 1000001,
+			"start_date": "2017-05-24",
+			"end_date": "2017-05-29",
+			"allocation": null,
+			"notes": null,
+			"updated_at": "2017-05-02T19:07:00.478Z",
+			"updated_by_id": 111111,
+			"project_id": 222222,
+			"person_id": 333333,
+			"placeholder_id": null,
+			"repeated_assignment_set_id": null
+		},
+		{
+			"id": 1000002,
+			"start_date": "2017-05-15",
+			"end_date": "2017-05-16",
+			"allocation": null,
+			"notes": "PTO",
+			"updated_at": "2017-05-04T17:05:55.197Z",
+			"updated_by_id": 111111,
+			"project_id": 222222,
+			"person_id": 444444,
+			"placeholder_id": null,
+			"repeated_assignment_set_id": null
+		}
+  ]
+}

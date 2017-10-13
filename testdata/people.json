@@ -1,0 +1,66 @@
+{
+	"people": [
+		{
+			"id": 1500000,
+			"first_name": "Testing",
+			"last_name": "Person",
+			"email": "testing@example.com",
+			"login": "enabled",
+			"admin": true,
+			"archived": false,
+			"subscribed": true,
+			"avatar_url": "https://secure.gravatar.com/avatar/tester.jpg",
+			"teams": [
+				"test",
+				"user"
+			],
+			"roles": [
+				"test",
+				"skill"
+			],
+			"updated_at": "2017-09-28T23:23:51.111Z",
+			"updated_by_id": 111111,
+			"harvest_user_id": 1500000,
+			"weekly_capacity": 40,
+			"working_days": {
+				"monday": true,
+				"tuesday": true,
+				"wednesday": true,
+				"thursday": true,
+				"friday": true
+			},
+			"color_blind": false
+		},
+		{
+			"id": 248362,
+			"first_name": "Test",
+			"last_name": "User",
+			"email": "test@example.com",
+			"login": "enabled",
+			"admin": true,
+			"archived": false,
+			"subscribed": true,
+			"avatar_url": "https://secure.gravatar.com/avatar/test.jpg",
+			"teams": [
+				"tester",
+				"user"
+			],
+			"roles": [
+				"tester",
+				"user"
+			],
+			"updated_at": "2017-09-28T14:59:44.541Z",
+			"updated_by_id": 111111,
+			"harvest_user_id": 1111111,
+			"weekly_capacity": 0,
+			"working_days": {
+				"monday": true,
+				"tuesday": false,
+				"wednesday": false,
+				"thursday": false,
+				"friday": false
+			},
+			"color_blind": false
+		}
+  ]
+}

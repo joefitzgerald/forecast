@@ -1,0 +1,37 @@
+{
+	"projects": [
+		{
+			"id": 111111,
+			"name": "Test Project 1",
+			"color": "black",
+			"code": null,
+			"notes": null,
+			"start_date": "2017-01-05",
+			"end_date": "2018-02-23",
+			"harvest_id": null,
+			"archived": false,
+			"updated_at": "2017-10-13T20:49:36.418Z",
+			"updated_by_id": 111111,
+			"client_id": null,
+			"tags": []
+		},
+		{
+			"id": 222222,
+			"name": "Test Project 2",
+			"color": "gray",
+			"code": "4321",
+			"notes": "Test Notes",
+			"start_date": "2017-04-10",
+			"end_date": "2017-05-19",
+			"harvest_id": 1300000,
+			"archived": false,
+			"updated_at": "2017-08-03T22:20:03.119Z",
+			"updated_by_id": 111111,
+			"client_id": 123456,
+			"tags": [
+				"test",
+				"project"
+			]
+		}
+  ]
+}

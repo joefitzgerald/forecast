@@ -1,0 +1,43 @@
+{
+	"account": {
+		"id": 987654,
+		"name": "Test",
+		"weekly_capacity": 144000,
+		"color_labels": [
+			{
+				"name": "orange",
+				"label": "Open"
+			},
+			{
+				"name": "green",
+				"label": "Locked"
+			},
+			{
+				"name": "aqua",
+				"label": "Penciled"
+			},
+			{
+				"name": "blue",
+				"label": "Internal"
+			},
+			{
+				"name": "purple",
+				"label": "Icebox"
+			},
+			{
+				"name": "magenta",
+				"label": "Backlog"
+			},
+			{
+				"name": "red",
+				"label": "Escalation"
+			},
+			{
+				"name": "gray",
+				"label": "Done"
+			}
+		],
+		"harvest_subdomain": "test",
+		"harvest_name": "Test"
+	}
+}

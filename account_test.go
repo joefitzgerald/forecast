@@ -30,9 +30,9 @@ var _ = Describe("Accounts", func() {
 		BeforeEach(func() {
 			server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				response := ReadFile("accounts.json")
-				fmt.Fprintf(w, "%s", response)
 				w.Header().Set("Content-Type", "application/json; charset=utf-8")
 				w.WriteHeader(http.StatusOK)
+				fmt.Fprintf(w, "%s", response)
 			}))
 
 			api = New(server.URL, "test-token", "987654")
@@ -55,9 +55,9 @@ var _ = Describe("Accounts", func() {
 		BeforeEach(func() {
 			server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				response := "error"
-				fmt.Fprintf(w, "%s", response)
 				w.Header().Set("Content-Type", "application/json; charset=utf-8")
 				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w, "%s", response)
 			}))
 
 			api = New(server.URL, "test-token", "987654")

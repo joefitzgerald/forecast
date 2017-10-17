@@ -3,6 +3,7 @@ package forecast_test
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 
 	. "github.com/onsi/ginkgo"
@@ -12,6 +13,7 @@ import (
 )
 
 func TestForecast(t *testing.T) {
+	log.SetFlags(log.Llongfile)
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Forecast Suite")
 }

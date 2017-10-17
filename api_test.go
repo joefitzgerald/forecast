@@ -49,9 +49,9 @@ var _ = Describe("API", func() {
 		BeforeEach(func() {
 			server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				response := ReadFile("whoami.json")
-				fmt.Fprintf(w, "%s", response)
 				w.Header().Set("Content-Type", "application/json; charset=utf-8")
 				w.WriteHeader(http.StatusOK)
+				fmt.Fprintf(w, "%s", response)
 			}))
 			api = New(server.URL, "test-token", "000000")
 		})

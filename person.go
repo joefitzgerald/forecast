@@ -40,7 +40,8 @@ type Person struct {
 		Thursday  bool `json:"thursday"`
 		Friday    bool `json:"friday"`
 	} `json:"working_days"`
-	ColorBlind bool `json:"color_blind"`
+	ColorBlind bool     `json:"color_blind"`
+	Roles      []string `json:"roles"`
 }
 
 // People returns all people being scheduled in Forecast

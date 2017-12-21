@@ -41,8 +41,9 @@ var _ = Describe("Person", func() {
 
 			It("should return people and a nil error", func() {
 				people, err := api.People()
-				Ω(people).ShouldNot(BeNil())
+				Ω(people).ShouldNot(BeEmpty())
 				Ω(err).ShouldNot(HaveOccurred())
+				Ω(people[0].Roles).ShouldNot(BeEmpty())
 			})
 		})
 

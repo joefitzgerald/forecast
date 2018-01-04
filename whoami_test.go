@@ -41,8 +41,8 @@ var _ = Describe("WhoAmI", func() {
 
 			It("should return whoami and a nil error", func() {
 				whoami, err := api.WhoAmI()
-				Ω(whoami).ShouldNot(BeNil())
-				Ω(err).ShouldNot(HaveOccurred())
+				Expect(whoami).ShouldNot(BeNil())
+				Expect(err).ShouldNot(HaveOccurred())
 			})
 		})
 
@@ -60,8 +60,8 @@ var _ = Describe("WhoAmI", func() {
 
 			It("should return an error", func() {
 				whoami, err := api.WhoAmI()
-				Ω(whoami).Should(BeNil())
-				Ω(err).Should(HaveOccurred())
+				Expect(whoami).Should(BeNil())
+				Expect(err).Should(HaveOccurred())
 			})
 		})
 	})

@@ -40,14 +40,14 @@ var _ = Describe("Accounts", func() {
 
 		It("should return an account and a nil error", func() {
 			account, err := api.Account()
-			Ω(account).ShouldNot(BeNil())
-			Ω(account.ID).Should(Equal(987654))
-			Ω(account.Name).Should(Equal("Test"))
-			Ω(account.WeeklyCapacity).Should(Equal(144000))
-			Ω(len(account.ColorLabels)).Should(Equal(8))
-			Ω(account.HarvestName).Should(Equal("Test"))
-			Ω(account.HarvestSubdomain).Should(Equal("test"))
-			Ω(err).ShouldNot(HaveOccurred())
+			Expect(account).ShouldNot(BeNil())
+			Expect(account.ID).Should(Equal(987654))
+			Expect(account.Name).Should(Equal("Test"))
+			Expect(account.WeeklyCapacity).Should(Equal(144000))
+			Expect(len(account.ColorLabels)).Should(Equal(8))
+			Expect(account.HarvestName).Should(Equal("Test"))
+			Expect(account.HarvestSubdomain).Should(Equal("test"))
+			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
 
@@ -65,8 +65,8 @@ var _ = Describe("Accounts", func() {
 
 		It("should return an error", func() {
 			account, err := api.Account()
-			Ω(account).Should(BeNil())
-			Ω(err).Should(HaveOccurred())
+			Expect(account).Should(BeNil())
+			Expect(err).Should(HaveOccurred())
 		})
 	})
 })

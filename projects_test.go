@@ -41,8 +41,8 @@ var _ = Describe("Projects", func() {
 
 			It("should return projects and a nil error", func() {
 				projects, err := api.Projects()
-				Ω(projects).ShouldNot(BeNil())
-				Ω(err).ShouldNot(HaveOccurred())
+				Expect(projects).ShouldNot(BeNil())
+				Expect(err).ShouldNot(HaveOccurred())
 			})
 		})
 
@@ -60,8 +60,8 @@ var _ = Describe("Projects", func() {
 
 			It("should return an error", func() {
 				projects, err := api.Projects()
-				Ω(projects).Should(BeNil())
-				Ω(err).Should(HaveOccurred())
+				Expect(projects).Should(BeNil())
+				Expect(err).Should(HaveOccurred())
 			})
 		})
 	})

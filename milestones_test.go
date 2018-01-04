@@ -41,8 +41,8 @@ var _ = Describe("Milestones", func() {
 
 			It("should return milestones and a nil error", func() {
 				milestones, err := api.Milestones()
-				Ω(milestones).ShouldNot(BeNil())
-				Ω(err).ShouldNot(HaveOccurred())
+				Expect(milestones).ShouldNot(BeNil())
+				Expect(err).ShouldNot(HaveOccurred())
 			})
 		})
 
@@ -60,8 +60,8 @@ var _ = Describe("Milestones", func() {
 
 			It("should return an error", func() {
 				milestones, err := api.Milestones()
-				Ω(milestones).Should(BeNil())
-				Ω(err).Should(HaveOccurred())
+				Expect(milestones).Should(BeNil())
+				Expect(err).Should(HaveOccurred())
 			})
 		})
 	})

@@ -39,9 +39,9 @@ var _ = Describe("API", func() {
 
 		It("should return an unauthorized error", func() {
 			user, err := api.WhoAmI()
-			Ω(user).Should(BeNil())
-			Ω(err).Should(HaveOccurred())
-			Ω(err.Error()).Should(Equal("401 Unauthorized: " + ReadFile("non-existent-token.json")))
+			Expect(user).Should(BeNil())
+			Expect(err).Should(HaveOccurred())
+			Expect(err.Error()).Should(Equal("401 Unauthorized: " + ReadFile("non-existent-token.json")))
 		})
 	})
 
@@ -58,12 +58,12 @@ var _ = Describe("API", func() {
 
 		It("should not return an unauthorized error", func() {
 			user, err := api.WhoAmI()
-			Ω(user).ShouldNot(BeNil())
-			Ω(user.ID).Should(Equal(123456))
-			Ω(len(user.AccountIds)).Should(Equal(2))
-			Ω(user.AccountIds[0]).Should(Equal(111111))
-			Ω(user.AccountIds[1]).Should(Equal(222222))
-			Ω(err).ShouldNot(HaveOccurred())
+			Expect(user).ShouldNot(BeNil())
+			Expect(user.ID).Should(Equal(123456))
+			Expect(len(user.AccountIds)).Should(Equal(2))
+			Expect(user.AccountIds[0]).Should(Equal(111111))
+			Expect(user.AccountIds[1]).Should(Equal(222222))
+			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
 })

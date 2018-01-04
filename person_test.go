@@ -41,9 +41,9 @@ var _ = Describe("Person", func() {
 
 			It("should return people and a nil error", func() {
 				people, err := api.People()
-				Ω(people).ShouldNot(BeEmpty())
-				Ω(err).ShouldNot(HaveOccurred())
-				Ω(people[0].Roles).ShouldNot(BeEmpty())
+				Expect(people).ShouldNot(BeNil())
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(people[0].Roles).ShouldNot(BeEmpty())
 			})
 		})
 
@@ -61,8 +61,8 @@ var _ = Describe("Person", func() {
 
 			It("should return an error", func() {
 				people, err := api.People()
-				Ω(people).Should(BeNil())
-				Ω(err).Should(HaveOccurred())
+				Expect(people).Should(BeNil())
+				Expect(err).Should(HaveOccurred())
 			})
 		})
 	})

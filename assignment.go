@@ -3,7 +3,9 @@ package forecast
 import (
 	"encoding/csv"
 	"io"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -27,6 +29,17 @@ type Assignment struct {
 	PersonID                int       `json:"person_id"`
 	PlaceholderID           int       `json:"placeholder_id"`
 	RepeatedAssignmentSetID int       `json:"repeated_assignment_set_id"`
+	ActiveOnDaysOff         bool      `json:"active_on_days_off"`
+}
+
+// AssignmentFilter is used to filter assignments
+type AssignmentFilter struct {
+	ProjectID               int
+	PersonID                int
+	StartDate               string // Format: YYYY-MM-DD
+	EndDate                 string // Format: YYYY-MM-DD
+	RepeatedAssignmentSetID int
+	State                   string // active or archived
 }
 
 // Weekdays returns the number of working days between the start date and end date
@@ -74,6 +87,49 @@ func (api *API) Assignments() (Assignments, error) {
 		return nil, err
 	}
 	return container.Assignments, nil
+}
+
+// AssignmentsWithFilter retrieves all assignments for the Forecast account
+func (api *API) AssignmentsWithFilter(filter AssignmentFilter) (Assignments, error) {
+	params := ToParams(filter.Values())
+	var container assignmentsContainer
+	err := api.do("assignments"+params, &container)
+	if err != nil {
+		return nil, err
+	}
+	return container.Assignments, nil
+}
+
+// ToParams formats url.Values as a string
+func ToParams(values url.Values) string {
+	if len(values) == 0 {
+		return ""
+	}
+	return "?" + values.Encode()
+}
+
+// Values returns the AssignmentFilter as a url.Values result
+func (filter *AssignmentFilter) Values() url.Values {
+	result := url.Values{}
+	if filter.ProjectID != 0 {
+		result.Set("project_id", strconv.Itoa(filter.ProjectID))
+	}
+	if filter.PersonID != 0 {
+		result.Set("person_id", strconv.Itoa(filter.PersonID))
+	}
+	if strings.TrimSpace(filter.StartDate) != "" {
+		result.Set("start_date", filter.StartDate)
+	}
+	if strings.TrimSpace(filter.EndDate) != "" {
+		result.Set("end_date", filter.EndDate)
+	}
+	if filter.RepeatedAssignmentSetID != 0 {
+		result.Set("repeated_assignment_set_id", strconv.Itoa(filter.RepeatedAssignmentSetID))
+	}
+	if strings.TrimSpace(filter.State) != "" {
+		result.Set("state", filter.State)
+	}
+	return result
 }
 
 // ToCSV writes the projects to the supplied writer in CSV

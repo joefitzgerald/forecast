@@ -2,6 +2,7 @@ package forecast
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"net/url"
 	"strconv"
@@ -60,6 +61,75 @@ func (a *Assignment) Weekdays() int {
 	for {
 		if finish.Sub(next).Seconds() < 0 {
 			break
+		}
+		switch next.Weekday() {
+		case time.Monday:
+			result = result + 1
+		case time.Tuesday:
+			result = result + 1
+		case time.Wednesday:
+			result = result + 1
+		case time.Thursday:
+			result = result + 1
+		case time.Friday:
+			result = result + 1
+		}
+		next = next.Add(time.Hour * 24)
+	}
+
+	return result
+}
+
+func (a *Assignment) WorkingDaysBetween(startDate string, endDate string) int {
+	var start *time.Time
+	if strings.TrimSpace(startDate) != "" {
+		parsedStart, err := time.Parse("2006-01-02", startDate)
+		if err == nil {
+			start = &parsedStart
+		} else {
+			fmt.Println(err)
+		}
+	}
+	var end *time.Time
+	if strings.TrimSpace(endDate) != "" {
+		parsedEnd, err := time.Parse("2006-01-02", endDate)
+		if err == nil {
+			end = &parsedEnd
+		} else {
+			fmt.Println(err)
+		}
+	}
+	assignmentStart, err := time.Parse("2006-01-02", a.StartDate)
+	if err != nil {
+		return 0
+	}
+
+	assignmentEnd, err := time.Parse("2006-01-02", a.EndDate)
+	if err != nil {
+		return 0
+	}
+
+	next := assignmentStart
+	result := 0
+	for {
+		if end != nil {
+			// Don't go past the requested end date
+			if end.AddDate(0, 0, 1).Before(next) {
+				break
+			}
+		}
+
+		// Assignment has not ended
+		if assignmentEnd.Sub(next).Seconds() < 0 {
+			break
+		}
+
+		if start != nil {
+			// Skip assignment dates that are prior to the requested start date
+			if start.After(next.AddDate(0, 0, -1)) {
+				next = next.Add(time.Hour * 24)
+				continue
+			}
 		}
 		switch next.Weekday() {
 		case time.Monday:

@@ -45,21 +45,57 @@ type AssignmentFilter struct {
 // Weekdays returns the number of working days between the start date and end date
 // of the assignment
 func (a *Assignment) Weekdays() int {
-	start, err := time.Parse("2006-01-02", a.StartDate)
+	return a.WorkingDaysBetween("", "")
+}
+
+// WorkingDaysBetween calculates the number of assignment days between the given
+// start date and end date
+func (a *Assignment) WorkingDaysBetween(startDate string, endDate string) int {
+	var start *time.Time
+	if strings.TrimSpace(startDate) != "" {
+		parsedStart, err := time.Parse("2006-01-02", startDate)
+		if err == nil {
+			start = &parsedStart
+		}
+	}
+	var end *time.Time
+	if strings.TrimSpace(endDate) != "" {
+		parsedEnd, err := time.Parse("2006-01-02", endDate)
+		if err == nil {
+			end = &parsedEnd
+		}
+	}
+	assignmentStart, err := time.Parse("2006-01-02", a.StartDate)
 	if err != nil {
 		return 0
 	}
 
-	finish, err := time.Parse("2006-01-02", a.EndDate)
+	assignmentEnd, err := time.Parse("2006-01-02", a.EndDate)
 	if err != nil {
 		return 0
 	}
 
-	next := start
+	next := assignmentStart
 	result := 0
 	for {
-		if finish.Sub(next).Seconds() < 0 {
+		if end != nil {
+			// Don't go past the requested end date
+			if end.AddDate(0, 0, 1).Before(next) {
+				break
+			}
+		}
+
+		// Assignment has not ended
+		if assignmentEnd.Sub(next).Seconds() < 0 {
 			break
+		}
+
+		if start != nil {
+			// Skip assignment dates that are prior to the requested start date
+			if start.After(next.AddDate(0, 0, -1)) {
+				next = next.Add(time.Hour * 24)
+				continue
+			}
 		}
 		switch next.Weekday() {
 		case time.Monday:

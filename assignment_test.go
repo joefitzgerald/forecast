@@ -221,4 +221,23 @@ var _ = Describe("Assignment", func() {
 			Expect(actual).Should(Equal(0))
 		})
 	})
+
+	Context("WorkingDaysBetween()", func() {
+		doTestAssignmentDays := func(assignmentStart string, assignmentEnd string, startDate string, endDate string, expected int) {
+			assignment := Assignment{
+				StartDate: assignmentStart,
+				EndDate:   assignmentEnd,
+			}
+
+			actual := assignment.WorkingDaysBetween(startDate, endDate)
+			Expect(actual).Should(Equal(expected))
+		}
+		It("calculates assignment weekdays appropriately", func() {
+			doTestAssignmentDays("2017-10-30", "2017-11-07", "2017-11-04", "2017-11-10", 2)
+			doTestAssignmentDays("2017-10-30", "2017-11-13", "2017-11-04", "2017-11-10", 5)
+			doTestAssignmentDays("2017-10-30", "2017-11-13", "", "2017-11-10", 10)
+			doTestAssignmentDays("2017-10-30", "2017-11-13", "", "", 11)
+			doTestAssignmentDays("2017-10-30", "2017-11-13", "2017-11-04", "", 6)
+		})
+	})
 })

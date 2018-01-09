@@ -1,0 +1,30 @@
+{
+  "placeholders": [
+    {
+      "id": 1,
+      "name": "Test Placeholder",
+      "archived": false,
+      "teams": [
+        "team 1"
+      ],
+      "roles": [
+        "role 2"
+      ],
+      "updated_at": "2018-01-09T20:40:24.000Z",
+      "updated_by_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Another Placeholder",
+      "archived": false,
+      "teams": [
+        "team 2"
+      ],
+      "roles": [
+        "role 1"
+      ],
+      "updated_at": "2018-01-09T20:40:24.000Z",
+      "updated_by_id": 1
+    }
+  ]
+}

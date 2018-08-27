@@ -4,20 +4,37 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"testing"
 
-	. "github.com/joefitzgerald/forecast"
-
-	. "github.com/onsi/ginkgo"
+	"github.com/joefitzgerald/forecast"
 	. "github.com/onsi/gomega"
+	"github.com/sclevine/spec"
+	"github.com/sclevine/spec/report"
 )
 
-var _ = Describe("API", func() {
+func TestAPI(t *testing.T) {
+	spec.Run(t, "API", testAPI, spec.Report(report.Terminal{}))
+}
+
+func testAPI(t *testing.T, when spec.G, it spec.S) {
 	var (
-		server *httptest.Server
-		api    *API
+		server  *httptest.Server
+		handler http.Handler
+		api     *forecast.API
 	)
 
-	AfterEach(func() {
+	it.Before(func() {
+		RegisterTestingT(t)
+		server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if handler != nil {
+				handler.ServeHTTP(w, r)
+			}
+		}))
+
+		api = forecast.New(server.URL, "test-token", "000000")
+	})
+
+	it.After(func() {
 		api = nil
 		if server == nil {
 			return
@@ -26,18 +43,17 @@ var _ = Describe("API", func() {
 		server = nil
 	})
 
-	Context("when the access token is invalid", func() {
-		BeforeEach(func() {
-			server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	when("when the access token is invalid", func() {
+		it.Before(func() {
+			handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				response := ReadFile("non-existent-token.json")
 				w.Header().Set("Content-Type", "application/json; charset=utf-8")
 				w.WriteHeader(http.StatusUnauthorized)
 				fmt.Fprintf(w, "%s", response)
-			}))
-			api = New(server.URL, "test-token", "000000")
+			})
 		})
 
-		It("should return an unauthorized error", func() {
+		it("should return an unauthorized error", func() {
 			user, err := api.WhoAmI()
 			Expect(user).Should(BeNil())
 			Expect(err).Should(HaveOccurred())
@@ -45,18 +61,17 @@ var _ = Describe("API", func() {
 		})
 	})
 
-	Context("when the access token is valid", func() {
-		BeforeEach(func() {
-			server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	when("when the access token is valid", func() {
+		it.Before(func() {
+			handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				response := ReadFile("whoami.json")
 				w.Header().Set("Content-Type", "application/json; charset=utf-8")
 				w.WriteHeader(http.StatusOK)
 				fmt.Fprintf(w, "%s", response)
-			}))
-			api = New(server.URL, "test-token", "000000")
+			})
 		})
 
-		It("should not return an unauthorized error", func() {
+		it("should not return an unauthorized error", func() {
 			user, err := api.WhoAmI()
 			Expect(user).ShouldNot(BeNil())
 			Expect(user.ID).Should(Equal(123456))
@@ -66,4 +81,4 @@ var _ = Describe("API", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
-})
+}

@@ -4,65 +4,76 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"testing"
 
-	. "github.com/joefitzgerald/forecast"
-
-	. "github.com/onsi/ginkgo"
+	"github.com/joefitzgerald/forecast"
 	. "github.com/onsi/gomega"
+	"github.com/sclevine/spec"
+	"github.com/sclevine/spec/report"
 )
 
-var _ = Describe("Milestones", func() {
-	Context("Milestones()", func() {
-		var (
-			server *httptest.Server
-			api    *API
-		)
+func TestMilestones(t *testing.T) {
+	spec.Run(t, "Milestones", testMilestones, spec.Report(report.Terminal{}))
+}
 
-		AfterEach(func() {
-			api = nil
-			if server == nil {
-				return
+func testMilestones(t *testing.T, when spec.G, it spec.S) {
+	var (
+		server  *httptest.Server
+		handler http.Handler
+		api     *forecast.API
+	)
+
+	it.Before(func() {
+		RegisterTestingT(t)
+		server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if handler != nil {
+				handler.ServeHTTP(w, r)
 			}
-			server.Close()
-			server = nil
+		}))
+
+		api = forecast.New(server.URL, "test-token", "000000")
+	})
+
+	it.After(func() {
+		api = nil
+		if server == nil {
+			return
+		}
+		server.Close()
+		server = nil
+	})
+
+	when("when a response is returned from the server", func() {
+		it.Before(func() {
+			handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				response := ReadFile("milestones.json")
+				w.Header().Set("Content-Type", "application/json; charset=utf-8")
+				w.WriteHeader(http.StatusOK)
+				fmt.Fprintf(w, "%s", response)
+			})
 		})
 
-		Context("when a response is returned from the server", func() {
-			BeforeEach(func() {
-				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					response := ReadFile("milestones.json")
-					w.Header().Set("Content-Type", "application/json; charset=utf-8")
-					w.WriteHeader(http.StatusOK)
-					fmt.Fprintf(w, "%s", response)
-				}))
-
-				api = New(server.URL, "test-token", "987654")
-			})
-
-			It("should return milestones and a nil error", func() {
-				milestones, err := api.Milestones()
-				Expect(milestones).ShouldNot(BeNil())
-				Expect(err).ShouldNot(HaveOccurred())
-			})
-		})
-
-		Context("when an error is returned from the server", func() {
-			BeforeEach(func() {
-				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					response := "error"
-					w.Header().Set("Content-Type", "application/json; charset=utf-8")
-					w.WriteHeader(http.StatusBadRequest)
-					fmt.Fprintf(w, "%s", response)
-				}))
-
-				api = New(server.URL, "test-token", "987654")
-			})
-
-			It("should return an error", func() {
-				milestones, err := api.Milestones()
-				Expect(milestones).Should(BeNil())
-				Expect(err).Should(HaveOccurred())
-			})
+		it("should return milestones and a nil error", func() {
+			milestones, err := api.Milestones()
+			Expect(milestones).ShouldNot(BeNil())
+			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
-})
+
+	when("when an error is returned from the server", func() {
+		it.Before(func() {
+			handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				response := "error"
+				w.Header().Set("Content-Type", "application/json; charset=utf-8")
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w, "%s", response)
+			})
+		})
+
+		it("should return an error", func() {
+			milestones, err := api.Milestones()
+			Expect(milestones).Should(BeNil())
+			Expect(err).Should(HaveOccurred())
+		})
+	})
+}

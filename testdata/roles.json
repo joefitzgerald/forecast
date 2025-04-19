@@ -1,0 +1,18 @@
+{
+  "roles": [
+    {
+      "id": 1,
+      "name": "Test Role 1",
+      "placeholder_ids": [1, 2, 3],
+      "person_ids": [1, 2, 3],
+      "harvest_role_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Test Role 2",
+      "placeholder_ids": [4, 5, 6],
+      "person_ids": [4, 5],
+      "harvest_role_id": 2
+    }
+  ]
+}

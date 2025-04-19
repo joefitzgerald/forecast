@@ -63,3 +63,52 @@ func (api *API) FutureScheduledHoursForProject(from string, projectid int) (Futu
 	}
 	return container.FutureScheduledHours, nil
 }
+
+// AssignedPeople returns a map of project ID to a slice of person IDs who are
+// assigned to each project
+func (api *API) AssignedPeople(from string, to string) (map[string][]int, error) {
+	return get[map[string][]int](api, fmt.Sprintf("aggregate/projects/assigned_people?start_date=%s&end_date=%s", from, to))
+}
+
+type ProjectHeatmapItem struct {
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
+}
+
+// ProjectHeatmap returns an overview of projects with assignments for the given time period
+func (api *API) ProjectHeatmap(from string, to string, projectID int, scale string) ([]ProjectHeatmapItem, error) {
+	if scale == "" {
+		scale = "daily"
+	}
+	return get[[]ProjectHeatmapItem](api, fmt.Sprintf("aggregate/heatmap/project?starting=%s&ending=%s&project_id=%d&scale=%s", from, to, projectID, scale))
+}
+
+type PersonHeatmapItem struct {
+	StartDate       string `json:"start_date"`
+	EndDate         string `json:"end_date"`
+	DailyAllocation int    `json:"daily_allocation"`
+	DailyTimeOff    int    `json:"daily_time_off"`
+}
+
+// PersonHeatmap returns an overview of people with assignments for the given time period
+func (api *API) PersonHeatmap(from string, to string, personID int, scale string) ([]PersonHeatmapItem, error) {
+	if scale == "" {
+		scale = "daily"
+	}
+	return get[[]PersonHeatmapItem](api, fmt.Sprintf("aggregate/heatmap/person?starting=%s&ending=%s&person_id=%d&scale=%s", from, to, personID, scale))
+}
+
+type PlaceholderHeatmapItem struct {
+	StartDate       string `json:"start_date"`
+	EndDate         string `json:"end_date"`
+	DailyAllocation int    `json:"daily_allocation"`
+	DailyTimeOff    int    `json:"daily_time_off"`
+}
+
+// PlaceholderHeatmap returns an overview of placeholders with assignments for the given time period
+func (api *API) PlaceholderHeatmap(from string, to string, placeholderID int, scale string) ([]PlaceholderHeatmapItem, error) {
+	if scale == "" {
+		scale = "daily"
+	}
+	return get[[]PlaceholderHeatmapItem](api, fmt.Sprintf("aggregate/heatmap/placeholder?starting=%s&ending=%s&placeholder_id=%d&scale=%s", from, to, placeholderID, scale))
+}

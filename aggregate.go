@@ -12,10 +12,11 @@ type RemainingBudgetedHours []RemainingBudgetedHoursItem
 // RemainingBudgetedHoursItem is an aggregate representing the remaining budgeted
 // hours for the given Forecast project
 type RemainingBudgetedHoursItem struct {
-	ProjectID    int     `json:"project_id"`
-	BudgetBy     string  `json:"budget_by"`
-	Hours        float64 `json:"hours"`
-	ResponseCode int     `json:"response_code"`
+	ProjectID       int     `json:"project_id"`
+	BudgetBy        string  `json:"budget_by"`
+	BudgetIsMonthly bool    `json:"budget_is_monthly"`
+	Hours           float64 `json:"hours"`
+	ResponseCode    int     `json:"response_code"`
 }
 
 // RemainingBudgetedHours returns the remaining budgeted hours for all
@@ -37,9 +38,10 @@ type FutureScheduledHours []FutureScheduledHoursItem
 
 // FutureScheduledHoursItem is a representation of the future scheduled hours for a project
 type FutureScheduledHoursItem struct {
-	ProjectID  int     `json:"project_id"`
-	PersonID   int     `json:"person_id"`
-	Allocation float64 `json:"allocation"`
+	ProjectID     int     `json:"project_id"`
+	PersonID      int     `json:"person_id"`
+	PlaceholderID int     `json:"placeholder_id"`
+	Allocation    float64 `json:"allocation"`
 }
 
 // FutureScheduledHours returns all future scheduled hours using the supplied

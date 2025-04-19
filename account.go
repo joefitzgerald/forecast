@@ -1,6 +1,9 @@
 package forecast
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type accountContainer struct {
 	Account Account `json:"account"`
@@ -15,8 +18,16 @@ type Account struct {
 		Name  string `json:"name"`
 		Label string `json:"label"`
 	} `json:"color_labels"`
-	HarvestSubdomain string `json:"harvest_subdomain"`
-	HarvestName      string `json:"harvest_name"`
+	HarvestSubdomain   string    `json:"harvest_subdomain"`
+	HarvestLink        string    `json:"harvest_link"`
+	SamlSignInRequired bool      `json:"saml_sign_in_required"`
+	HarvestName        string    `json:"harvest_name"`
+	WeekendsEnabled    bool      `json:"weekends_enabled"`
+	CreatedAt          time.Time `json:"created_at"`
+	CreatorFirstName   string    `json:"creator_first_name"`
+	CreatorLastName    string    `json:"creator_last_name"`
+	BillingStatus      string    `json:"billing_status"`
+	GDPR               bool      `json:"gdpr"`
 }
 
 // Account returns information about the current Forecast account

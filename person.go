@@ -39,9 +39,13 @@ type Person struct {
 		Wednesday bool `json:"wednesday"`
 		Thursday  bool `json:"thursday"`
 		Friday    bool `json:"friday"`
+		Saturday  bool `json:"saturday"`
+		Sunday    bool `json:"sunday"`
 	} `json:"working_days"`
 	ColorBlind bool     `json:"color_blind"`
 	Roles      []string `json:"roles"`
+	InvitationCodeID    string `json:"invitation_code_id"`
+	PersonalFeedTokenID int    `json:"personal_feed_token_id"`
 }
 
 // People returns all people being scheduled in Forecast

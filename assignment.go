@@ -23,6 +23,7 @@ type Assignment struct {
 	EndDate                 string    `json:"end_date"`
 	Allocation              int       `json:"allocation"`
 	Notes                   string    `json:"notes"`
+	HarvestProjectTaskID    int       `json:"harvest_project_task_id"`
 	UpdatedAt               time.Time `json:"updated_at"`
 	UpdatedByID             int       `json:"updated_by_id"`
 	ProjectID               int       `json:"project_id"`

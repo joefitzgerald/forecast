@@ -46,8 +46,7 @@ type Person struct {
 
 // People returns all people being scheduled in Forecast
 func (api *API) People() (People, error) {
-	var container peopleContainer
-	err := api.do("people", &container)
+	container, err := get[peopleContainer](api, "people")
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +58,7 @@ func (api *API) Person(id int) (*Person, error) {
 	if id == 0 {
 		return nil, errors.New("cannot retrieve a person with an id of 0")
 	}
-	var container personContainer
-	err := api.do(fmt.Sprintf("people/%v", id), &container)
+	container, err := get[personContainer](api, fmt.Sprintf("people/%v", id))
 	if err != nil {
 		return nil, err
 	}

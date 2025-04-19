@@ -21,8 +21,7 @@ type Milestone struct {
 
 // Milestones returns all milestones in the Forecast account
 func (api *API) Milestones() (Milestones, error) {
-	var container milestonesContainer
-	err := api.do("milestones", &container)
+	container, err := get[milestonesContainer](api, "milestones")
 	if err != nil {
 		return nil, err
 	}

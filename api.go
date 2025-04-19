@@ -3,7 +3,7 @@ package forecast
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 )
@@ -25,17 +25,18 @@ func New(url string, accountID string, accessToken string) *API {
 	}
 }
 
-func (api *API) do(path string, result interface{}) error {
+func get[T any](api *API, path string) (T, error) {
+	var result T
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/%s", api.URL, path), nil)
 	if err != nil {
-		return err
+		return result, err
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.token))
 	req.Header.Set("Forecast-Account-ID", api.AccountID)
 	if api.client == nil {
-		jar, e := cookiejar.New(nil)
-		if e != nil {
-			return e
+		jar, err := cookiejar.New(nil)
+		if err != nil {
+			return result, err
 		}
 		api.client = &http.Client{
 			Jar: jar,
@@ -43,17 +44,18 @@ func (api *API) do(path string, result interface{}) error {
 	}
 	r, err := api.client.Do(req)
 	if err != nil {
-		return err
+		return result, err
 	}
 	defer r.Body.Close()
 	if r.StatusCode >= http.StatusBadRequest {
-		body, err := ioutil.ReadAll(r.Body)
+		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			return err
+			return result, err
 		}
 
-		return fmt.Errorf("%s: %s", r.Status, string(body))
+		return result, fmt.Errorf("%s: %s", r.Status, string(body))
 	}
 
-	return json.NewDecoder(r.Body).Decode(result)
+	err = json.NewDecoder(r.Body).Decode(&result)
+	return result, err
 }

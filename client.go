@@ -21,8 +21,7 @@ type Client struct {
 
 // Clients retrieves all clients in the Forecast account
 func (api *API) Clients() (Clients, error) {
-	var container clientsContainer
-	err := api.do("clients", &container)
+	container, err := get[clientsContainer](api, "clients")
 	if err != nil {
 		return nil, err
 	}

@@ -117,8 +117,7 @@ func (a *Assignment) WorkingDaysBetween(startDate string, endDate string) int {
 
 // Assignments retrieves all assignments for the Forecast account
 func (api *API) Assignments() (Assignments, error) {
-	var container assignmentsContainer
-	err := api.do("assignments", &container)
+	container, err := get[assignmentsContainer](api, "assignments")
 	if err != nil {
 		return nil, err
 	}
@@ -128,8 +127,7 @@ func (api *API) Assignments() (Assignments, error) {
 // AssignmentsWithFilter retrieves all assignments for the Forecast account
 func (api *API) AssignmentsWithFilter(filter AssignmentFilter) (Assignments, error) {
 	params := ToParams(filter.Values())
-	var container assignmentsContainer
-	err := api.do("assignments"+params, &container)
+	container, err := get[assignmentsContainer](api, "assignments"+params)
 	if err != nil {
 		return nil, err
 	}

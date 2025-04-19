@@ -21,8 +21,7 @@ type Account struct {
 
 // Account returns information about the current Forecast account
 func (api *API) Account() (*Account, error) {
-	var container accountContainer
-	err := api.do(fmt.Sprintf("accounts/%v", api.AccountID), &container)
+	container, err := get[accountContainer](api, fmt.Sprintf("accounts/%v", api.AccountID))
 	if err != nil {
 		return nil, err
 	}

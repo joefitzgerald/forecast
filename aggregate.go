@@ -21,8 +21,7 @@ type RemainingBudgetedHoursItem struct {
 // RemainingBudgetedHours returns the remaining budgeted hours for all
 // Forecast projects
 func (api *API) RemainingBudgetedHours() (RemainingBudgetedHours, error) {
-	var container remainingBudgetedHoursContainer
-	err := api.do("aggregate/remaining_budgeted_hours", &container)
+	container, err := get[remainingBudgetedHoursContainer](api, "aggregate/remaining_budgeted_hours")
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +45,7 @@ type FutureScheduledHoursItem struct {
 // FutureScheduledHours returns all future scheduled hours using the supplied
 // date as the starting point
 func (api *API) FutureScheduledHours(from string) (FutureScheduledHours, error) {
-	var container futureScheduledHoursContainer
-	err := api.do(fmt.Sprintf("aggregate/future_scheduled_hours/%s", from), &container)
+	container, err := get[futureScheduledHoursContainer](api, fmt.Sprintf("aggregate/future_scheduled_hours/%s", from))
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +55,7 @@ func (api *API) FutureScheduledHours(from string) (FutureScheduledHours, error) 
 // FutureScheduledHoursForProject returns all future scheduled hours for the
 // given project using the supplied date as the starting point
 func (api *API) FutureScheduledHoursForProject(from string, projectid int) (FutureScheduledHours, error) {
-	var container futureScheduledHoursContainer
-	err := api.do(fmt.Sprintf("aggregate/future_scheduled_hours/%s?project_id=%v", from, projectid), &container)
+	container, err := get[futureScheduledHoursContainer](api, fmt.Sprintf("aggregate/future_scheduled_hours/%s?project_id=%v", from, projectid))
 	if err != nil {
 		return nil, err
 	}

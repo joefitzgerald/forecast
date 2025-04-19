@@ -9,12 +9,7 @@ import (
 	"github.com/joefitzgerald/forecast"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/spec"
-	"github.com/sclevine/spec/report"
 )
-
-func TestPerson(t *testing.T) {
-	spec.Run(t, "Person", testPerson, spec.Report(report.Terminal{}))
-}
 
 func testPerson(t *testing.T, when spec.G, it spec.S) {
 	var (

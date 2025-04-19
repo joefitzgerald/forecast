@@ -30,8 +30,7 @@ type Placeholder struct {
 
 // Placeholders returns all placeholders being scheduled in Forecast
 func (api *API) Placeholders() (Placeholders, error) {
-	var container placeholdersContainer
-	err := api.do("placeholders", &container)
+	container, err := get[placeholdersContainer](api, "placeholders")
 	if err != nil {
 		return nil, err
 	}
@@ -43,8 +42,7 @@ func (api *API) Placeholder(id int) (*Placeholder, error) {
 	if id == 0 {
 		return nil, errors.New("cannot retrieve a placeholder with an id of 0")
 	}
-	var container placeholderContainer
-	err := api.do(fmt.Sprintf("placeholders/%v", id), &container)
+	container, err := get[placeholderContainer](api, fmt.Sprintf("placeholders/%v", id))
 	if err != nil {
 		return nil, err
 	}

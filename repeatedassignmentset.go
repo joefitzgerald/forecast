@@ -23,8 +23,7 @@ type RepeatedAssignmentSet struct {
 
 // RepeatedAssignmentSets returns a list of repeated assignment sets
 func (api *API) RepeatedAssignmentSets() (RepeatedAssignmentSets, error) {
-	var container repeatedAssignmentSetsContainer
-	err := api.do("repeated_assignment_sets", &container)
+	container, err := get[repeatedAssignmentSetsContainer](api, "repeated_assignment_sets")
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +32,7 @@ func (api *API) RepeatedAssignmentSets() (RepeatedAssignmentSets, error) {
 
 // RepeatedAssignmentSet returns the repeated assignment set for the given id
 func (api *API) RepeatedAssignmentSet(id int) (*RepeatedAssignmentSet, error) {
-	var container repeatedAssignmentSetContainer
-	err := api.do(fmt.Sprintf("repeated_assignment_sets/%v", id), &container)
+	container, err := get[repeatedAssignmentSetContainer](api, fmt.Sprintf("repeated_assignment_sets/%v", id))
 	if err != nil {
 		return nil, err
 	}

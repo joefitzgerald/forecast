@@ -9,12 +9,7 @@ import (
 	"github.com/joefitzgerald/forecast"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/spec"
-	"github.com/sclevine/spec/report"
 )
-
-func TestPlaceholder(t *testing.T) {
-	spec.Run(t, "Placeholder", testPlaceholder, spec.Report(report.Terminal{}))
-}
 
 func testPlaceholder(t *testing.T, when spec.G, it spec.S) {
 	var (

@@ -18,8 +18,7 @@ type UserConnection struct {
 
 // UserConnections returns all current user connections
 func (api *API) UserConnections() (UserConnections, error) {
-	var container userConnectionsContainer
-	err := api.do("user_connections", &container)
+	container, err := get[userConnectionsContainer](api, "user_connections")
 	if err != nil {
 		return nil, err
 	}

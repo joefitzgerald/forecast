@@ -34,8 +34,7 @@ type Project struct {
 
 // Projects returns the list of projects in the Forecast Account
 func (api *API) Projects() (Projects, error) {
-	var container projectsContainer
-	err := api.do("projects", &container)
+	container, err := get[projectsContainer](api, "projects")
 	if err != nil {
 		return nil, err
 	}

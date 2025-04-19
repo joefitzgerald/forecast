@@ -9,12 +9,7 @@ import (
 	"github.com/joefitzgerald/forecast"
 	. "github.com/onsi/gomega"
 	"github.com/sclevine/spec"
-	"github.com/sclevine/spec/report"
 )
-
-func TestWhoAmI(t *testing.T) {
-	spec.Run(t, "WhoAmI", testWhoAmI, spec.Report(report.Terminal{}))
-}
 
 func testWhoAmI(t *testing.T, when spec.G, it spec.S) {
 	var (

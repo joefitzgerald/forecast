@@ -1,0 +1,19 @@
+{
+	"project": {
+        "id": 111111,
+        "name": "Test Project 1",
+        "color": "black",
+        "code": null,
+        "notes": null,
+        "start_date": "2017-01-05",
+        "end_date": "2018-02-23",
+        "harvest_id": null,
+        "archived": false,
+        "budget_by": "none",
+        "budget_is_monthly": false,
+        "updated_at": "2017-10-13T20:49:36.418Z",
+        "updated_by_id": 111111,
+        "client_id": null,
+        "tags": []
+    }
+}

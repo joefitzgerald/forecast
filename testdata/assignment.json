@@ -1,0 +1,16 @@
+{
+  "assignment": {
+    "id": 1000001,
+    "start_date": "2017-10-30",
+    "end_date": "2017-11-30",
+    "allocation": null,
+    "notes": null,
+    "updated_at": "2017-05-02T19:07:00.478Z",
+    "updated_by_id": 111111,
+    "project_id": 222222,
+    "person_id": 333333,
+    "placeholder_id": null,
+    "repeated_assignment_set_id": null,
+    "active_on_days_off": false
+  }
+}

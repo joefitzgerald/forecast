@@ -12,6 +12,11 @@ import (
 	"github.com/sclevine/spec"
 )
 
+const (
+	assignmentsTestFile = "assignments.json"
+	assignmentTestFile  = "assignment.json"
+)
+
 func testAssignment(t *testing.T, when spec.G, it spec.S) {
 	var (
 		server  *httptest.Server
@@ -104,7 +109,7 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 		when("when a response is returned from the server", func() {
 			it.Before(func() {
 				handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					response := ReadFile("assignments.json")
+					response := ReadFile(assignmentsTestFile)
 					w.Header().Set("Content-Type", "application/json; charset=utf-8")
 					w.WriteHeader(http.StatusOK)
 					fmt.Fprintf(w, "%s", response)
@@ -184,12 +189,7 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 
 		when("when an error is returned from the server", func() {
 			it.Before(func() {
-				handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					response := "error"
-					w.Header().Set("Content-Type", "application/json; charset=utf-8")
-					w.WriteHeader(http.StatusBadRequest)
-					fmt.Fprintf(w, "%s", response)
-				})
+				handler = httpHandler(http.StatusBadRequest, assignmentsTestFile)
 			})
 
 			it("should return an error", func() {
@@ -203,12 +203,7 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 	when("Assignments()", func() {
 		when("when a response is returned from the server", func() {
 			it.Before(func() {
-				handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					response := ReadFile("assignments.json")
-					w.Header().Set("Content-Type", "application/json; charset=utf-8")
-					w.WriteHeader(http.StatusOK)
-					fmt.Fprintf(w, "%s", response)
-				})
+				handler = httpHandler(http.StatusOK, assignmentsTestFile)
 			})
 
 			it("should return assignments and a nil error", func() {
@@ -220,12 +215,7 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 
 		when("when an error is returned from the server", func() {
 			it.Before(func() {
-				handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					response := "error"
-					w.Header().Set("Content-Type", "application/json; charset=utf-8")
-					w.WriteHeader(http.StatusBadRequest)
-					fmt.Fprintf(w, "%s", response)
-				})
+				handler = httpHandler(http.StatusBadRequest, assignmentsTestFile)
 			})
 
 			it("should return an error", func() {
@@ -235,4 +225,146 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 			})
 		})
 	})
+
+	when("PostAssignment", func() {
+		assignmentRequest := forecast.AssignmentRequest{
+			StartDate:               "2017-10-30",
+			EndDate:                 "2017-11-30",
+			Allocation:              nil,
+			Notes:                   "",
+			HarvestProjectTaskID:    nil,
+			ProjectID:               123456,
+			PersonID:                654321,
+			PlaceholderID:           nil,
+			RepeatedAssignmentSetID: nil,
+			ActiveOnDaysOff:         false,
+		}
+
+		when("when a successful response is returned from the server", func() {
+			it.Before(func() {
+				handler = httpHandler(http.StatusCreated, "")
+			})
+
+			it("should return a nil error", func() {
+				err := api.PostAssignment(assignmentRequest)
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		when("when an error is returned from the server", func() {
+			it.Before(func() {
+				handler = httpHandler(http.StatusBadRequest, "")
+			})
+
+			it("should return an error", func() {
+				err := api.PostAssignment(assignmentRequest)
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		when("when project_id is zero", func() {
+			it("should return an error without calling the server", func() {
+				invalid := assignmentRequest
+				invalid.ProjectID = 0
+				err := api.PostAssignment(invalid)
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+	})
+
+	when("PutAssignment", func() {
+		assignmentRequest := forecast.AssignmentRequest{
+			StartDate:               "2017-10-30",
+			EndDate:                 "2017-11-30",
+			Allocation:              nil,
+			Notes:                   "",
+			HarvestProjectTaskID:    nil,
+			ProjectID:               222222,
+			PersonID:                333333,
+			PlaceholderID:           nil,
+			RepeatedAssignmentSetID: nil,
+			ActiveOnDaysOff:         false,
+		}
+
+		when("when a successful response is returned from the server", func() {
+			it.Before(func() {
+				handler = httpHandler(http.StatusOK, assignmentTestFile)
+			})
+
+			it("should return a nil error", func() {
+				err := api.PutAssignment(assignmentRequest, 1234567)
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		when("when an error is returned from the server", func() {
+			it.Before(func() {
+				handler = httpHandler(http.StatusNotFound, assignmentTestFile)
+			})
+
+			it("should return an error", func() {
+				err := api.PutAssignment(assignmentRequest, 1234567)
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		when("when project_id is zero", func() {
+			it("should return an error without calling the server", func() {
+				invalid := assignmentRequest
+				invalid.ProjectID = 0
+				err := api.PutAssignment(invalid, 1234567)
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		when("when assignmentID is zero", func() {
+			it("should return an error without calling the server", func() {
+				err := api.PutAssignment(assignmentRequest, 0)
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+	})
+
+	when("DeleteAssignment", func() {
+		when("when a successful response is returned from the server", func() {
+			it.Before(func() {
+				handler = httpHandler(http.StatusOK, "")
+			})
+
+			it("should return a nil error", func() {
+				err := api.DeleteAssignment(1234567)
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		when("an error is returned from the server", func() {
+			it.Before(func() {
+				handler = httpHandler(http.StatusBadRequest, "")
+			})
+
+			it("should return an error", func() {
+				err := api.DeleteAssignment(1234567)
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		when("when assignmentID is zero", func() {
+			it("should return an error without calling the server", func() {
+				err := api.DeleteAssignment(0)
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+	})
+}
+
+func httpHandler(statusCode int, testFilePath string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		response := ""
+		if testFilePath != "" {
+			response = ReadFile(testFilePath)
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(statusCode)
+		fmt.Fprintf(w, "%s", response)
+	}
 }

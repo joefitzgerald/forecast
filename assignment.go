@@ -2,7 +2,9 @@ package forecast
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -31,6 +33,23 @@ type Assignment struct {
 	PlaceholderID           int       `json:"placeholder_id"`
 	RepeatedAssignmentSetID int       `json:"repeated_assignment_set_id"`
 	ActiveOnDaysOff         bool      `json:"active_on_days_off"`
+}
+type assignmentRequestContainer struct {
+	Assignment AssignmentRequest `json:"assignment"`
+}
+
+// AssignmentRequest is used as a payload when sending a mutation request for a Forecast assignment
+type AssignmentRequest struct {
+	StartDate               string `json:"start_date"`
+	EndDate                 string `json:"end_date"`
+	Allocation              *int   `json:"allocation"`
+	Notes                   string `json:"notes"`
+	HarvestProjectTaskID    *int   `json:"harvest_project_task_id"`
+	ProjectID               int    `json:"project_id"`
+	PersonID                int    `json:"person_id"`
+	PlaceholderID           *int   `json:"placeholder_id"`
+	RepeatedAssignmentSetID *int   `json:"repeated_assignment_set_id"`
+	ActiveOnDaysOff         bool   `json:"active_on_days_off"`
 }
 
 // AssignmentFilter is used to filter assignments
@@ -133,6 +152,34 @@ func (api *API) AssignmentsWithFilter(filter AssignmentFilter) (Assignments, err
 		return nil, err
 	}
 	return container.Assignments, nil
+}
+
+// PostAssignment creates a new assignment on the Forecast account
+// A PersonID of '0' will include "Everyone"
+func (api *API) PostAssignment(assignment AssignmentRequest) error {
+	if assignment.ProjectID < 1 {
+		return fmt.Errorf("unable to POST assignment - project_id is not valid")
+	}
+	return mutate(api, http.MethodPost, "assignments", assignmentRequestContainer{Assignment: assignment})
+}
+
+// PutAssignment updates an existing assignment on the Forecast account
+func (api *API) PutAssignment(assignment AssignmentRequest, assignmentID int) error {
+	if assignment.ProjectID < 1 {
+		return fmt.Errorf("unable to PUT assignment - project_id is not valid")
+	}
+	if assignmentID < 1 {
+		return fmt.Errorf("unable to PUT assignment - assignment_id is not valid")
+	}
+	return mutate(api, http.MethodPut, fmt.Sprintf("assignments/%d", assignmentID), assignmentRequestContainer{Assignment: assignment})
+}
+
+// DeleteAssignment deletes an assignment on the Forecast account
+func (api *API) DeleteAssignment(assignmentID int) error {
+	if assignmentID < 1 {
+		return fmt.Errorf("unable to DELETE assignment - assignment_id is not valid")
+	}
+	return mutateNoBody(api, http.MethodDelete, fmt.Sprintf("assignments/%d", assignmentID))
 }
 
 // ToParams formats url.Values as a string

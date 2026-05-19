@@ -11,6 +11,9 @@ import (
 	"time"
 )
 
+type assignmentContainer struct {
+	Assignment Assignment `json:"assignment"`
+}
 type assignmentsContainer struct {
 	Assignments Assignments `json:"assignments"`
 }
@@ -34,6 +37,7 @@ type Assignment struct {
 	RepeatedAssignmentSetID int       `json:"repeated_assignment_set_id"`
 	ActiveOnDaysOff         bool      `json:"active_on_days_off"`
 }
+
 type assignmentRequestContainer struct {
 	Assignment AssignmentRequest `json:"assignment"`
 }
@@ -154,30 +158,32 @@ func (api *API) AssignmentsWithFilter(filter AssignmentFilter) (Assignments, err
 	return container.Assignments, nil
 }
 
-// PostAssignment creates a new assignment on the Forecast account
+// CreateAssignment creates a new assignment on the Forecast account
 // A PersonID of '0' will include "Everyone"
-func (api *API) PostAssignment(assignment AssignmentRequest) error {
+func (api *API) CreateAssignment(assignment AssignmentRequest) (Assignment, error) {
 	if assignment.ProjectID < 1 {
-		return fmt.Errorf("unable to POST assignment - project_id is not valid")
+		return Assignment{}, fmt.Errorf("unable to create assignment - project_id is not valid")
 	}
-	return mutate(api, http.MethodPost, "assignments", assignmentRequestContainer{Assignment: assignment})
+	aContainer, err := mutate[assignmentRequestContainer, assignmentContainer](api, http.MethodPost, "assignments", assignmentRequestContainer{Assignment: assignment})
+	return aContainer.Assignment, err
 }
 
-// PutAssignment updates an existing assignment on the Forecast account
-func (api *API) PutAssignment(assignment AssignmentRequest, assignmentID int) error {
+// UpdateAssignment updates an existing assignment on the Forecast account
+func (api *API) UpdateAssignment(assignment AssignmentRequest, assignmentID int) (Assignment, error) {
 	if assignment.ProjectID < 1 {
-		return fmt.Errorf("unable to PUT assignment - project_id is not valid")
+		return Assignment{}, fmt.Errorf("unable to update assignment - project_id is not valid")
 	}
 	if assignmentID < 1 {
-		return fmt.Errorf("unable to PUT assignment - assignment_id is not valid")
+		return Assignment{}, fmt.Errorf("unable to update assignment - assignment_id is not valid")
 	}
-	return mutate(api, http.MethodPut, fmt.Sprintf("assignments/%d", assignmentID), assignmentRequestContainer{Assignment: assignment})
+	aContainer, err := mutate[assignmentRequestContainer, assignmentContainer](api, http.MethodPut, fmt.Sprintf("assignments/%d", assignmentID), assignmentRequestContainer{Assignment: assignment})
+	return aContainer.Assignment, err
 }
 
 // DeleteAssignment deletes an assignment on the Forecast account
 func (api *API) DeleteAssignment(assignmentID int) error {
 	if assignmentID < 1 {
-		return fmt.Errorf("unable to DELETE assignment - assignment_id is not valid")
+		return fmt.Errorf("unable to delete assignment - assignment_id is not valid")
 	}
 	return mutateNoBody(api, http.MethodDelete, fmt.Sprintf("assignments/%d", assignmentID))
 }

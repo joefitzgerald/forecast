@@ -226,7 +226,7 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 		})
 	})
 
-	when("PostAssignment", func() {
+	when("CreateAssignment", func() {
 		assignmentRequest := forecast.AssignmentRequest{
 			StartDate:               "2017-10-30",
 			EndDate:                 "2017-11-30",
@@ -242,12 +242,13 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 
 		when("when a successful response is returned from the server", func() {
 			it.Before(func() {
-				handler = httpHandler(http.StatusCreated, "")
+				handler = httpHandler(http.StatusCreated, assignmentTestFile)
 			})
 
-			it("should return a nil error", func() {
-				err := api.PostAssignment(assignmentRequest)
+			it("should return the created assignment", func() {
+				assignment, err := api.CreateAssignment(assignmentRequest)
 				Expect(err).ShouldNot(HaveOccurred())
+				Expect(assignment.ID).To(Equal(1234567))
 			})
 		})
 
@@ -257,7 +258,7 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 			})
 
 			it("should return an error", func() {
-				err := api.PostAssignment(assignmentRequest)
+				_, err := api.CreateAssignment(assignmentRequest)
 				Expect(err).Should(HaveOccurred())
 			})
 		})
@@ -266,13 +267,13 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 			it("should return an error without calling the server", func() {
 				invalid := assignmentRequest
 				invalid.ProjectID = 0
-				err := api.PostAssignment(invalid)
+				_, err := api.CreateAssignment(invalid)
 				Expect(err).Should(HaveOccurred())
 			})
 		})
 	})
 
-	when("PutAssignment", func() {
+	when("UpdateAssignment", func() {
 		assignmentRequest := forecast.AssignmentRequest{
 			StartDate:               "2017-10-30",
 			EndDate:                 "2017-11-30",
@@ -291,9 +292,10 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 				handler = httpHandler(http.StatusOK, assignmentTestFile)
 			})
 
-			it("should return a nil error", func() {
-				err := api.PutAssignment(assignmentRequest, 1234567)
+			it("should return the updated assignment", func() {
+				assignment, err := api.UpdateAssignment(assignmentRequest, 1234567)
 				Expect(err).ShouldNot(HaveOccurred())
+				Expect(assignment.ID).To(Equal(1234567))
 			})
 		})
 
@@ -303,7 +305,7 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 			})
 
 			it("should return an error", func() {
-				err := api.PutAssignment(assignmentRequest, 1234567)
+				_, err := api.UpdateAssignment(assignmentRequest, 1234567)
 				Expect(err).Should(HaveOccurred())
 			})
 		})
@@ -312,14 +314,14 @@ func testAssignment(t *testing.T, when spec.G, it spec.S) {
 			it("should return an error without calling the server", func() {
 				invalid := assignmentRequest
 				invalid.ProjectID = 0
-				err := api.PutAssignment(invalid, 1234567)
+				_, err := api.UpdateAssignment(invalid, 1234567)
 				Expect(err).Should(HaveOccurred())
 			})
 		})
 
 		when("when assignmentID is zero", func() {
 			it("should return an error without calling the server", func() {
-				err := api.PutAssignment(assignmentRequest, 0)
+				_, err := api.UpdateAssignment(assignmentRequest, 0)
 				Expect(err).Should(HaveOccurred())
 			})
 		})

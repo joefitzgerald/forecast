@@ -69,19 +69,21 @@ func get[T any](api *API, path string) (T, error) {
 	return result, err
 }
 
-func mutate[T any](api *API, method string, path string, content T) error {
+func mutate[TBody any, TResult any](api *API, method string, path string, content TBody) (TResult, error) {
+	var result TResult
 	b, err := json.Marshal(content)
 	if err != nil {
-		return err
+		return result, err
 	}
 	req, err := http.NewRequest(method, fmt.Sprintf("%s/%s", api.URL, path), bytes.NewReader(b))
 	if err != nil {
-		return err
+		return result, err
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.token))
 	req.Header.Set("Forecast-Account-ID", api.AccountID)
 	req.Header.Set("Content-Type", "application/json;charset=utf-8")
-	return doRequest(api, req)
+
+	return doRequest[TResult](api, req)
 }
 
 func mutateNoBody(api *API, method string, path string) error {
@@ -91,27 +93,33 @@ func mutateNoBody(api *API, method string, path string) error {
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.token))
 	req.Header.Set("Forecast-Account-ID", api.AccountID)
-	return doRequest(api, req)
+	_, err = doRequest[struct{}](api, req)
+	return err
 }
 
-func doRequest(api *API, req *http.Request) error {
+func doRequest[T any](api *API, req *http.Request) (T, error) {
+	var result T
 	err := api.initClient()
 	if err != nil {
-		return err
+		return result, err
 	}
 	r, err := api.client.Do(req)
 	if err != nil {
-		return err
+		return result, err
 	}
+
 	defer r.Body.Close()
 	if r.StatusCode >= http.StatusBadRequest {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			return err
+			return result, err
 		}
-
-		return fmt.Errorf("%s: %s", r.Status, string(body))
+		return result, fmt.Errorf("%s: %s", r.Status, string(body))
 	}
 
-	return nil
+	err = json.NewDecoder(r.Body).Decode(&result)
+	if err == io.EOF { // empty response body, nothing to decode
+		err = nil
+	}
+	return result, err
 }

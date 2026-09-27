@@ -17,6 +17,7 @@ func init() {
 	suite("Person", testPerson)
 	suite("Placeholder", testPlaceholder)
 	suite("Project", testProject)
+	suite("Raw", testRaw)
 	suite("WhoAmI", testWhoAmI)
 }
 

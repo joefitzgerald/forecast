@@ -3,7 +3,7 @@ module github.com/joefitzgerald/forecast
 go 1.25.0
 
 require (
-	github.com/onsi/gomega v1.43.1
+	github.com/onsi/gomega v1.44.0
 	github.com/sclevine/spec v1.4.0
 )
 
